@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GymSyS | Customer Retention</title>
+<style>
+:root{
+  --bg:#f4f6fa;--surface:#fff;--ink:#172033;--muted:#778197;--line:#e7eaf1;
+  --nav:#151d31;--nav2:#202b43;--blue:#5269e8;--blue-soft:#edf0ff;
+  --red:#d94d59;--red-soft:#fff0f0;--amber:#c18422;--amber-soft:#fff7e8;
+  --green:#218866;--green-soft:#eaf7f1;--shadow:0 8px 28px rgba(27,39,70,.06);
+}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input{font:inherit}.app{min-height:100vh;display:grid;grid-template-columns:238px 1fr}
+.sidebar{background:var(--nav);color:#dbe2f1;padding:26px 16px;display:flex;flex-direction:column;gap:28px}
+.brand{display:flex;align-items:center;gap:11px;padding:0 10px}.brand-mark{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#7e8cff,#5367e8);display:grid;place-items:center;color:#fff;font-weight:800;font-size:18px}
+.brand strong{font-size:17px;letter-spacing:.2px;color:white}.brand small{display:block;color:#9ba8c1;font-size:10px;letter-spacing:1.5px;margin-top:1px}
+.nav-label{font-size:10px;letter-spacing:1.4px;color:#7786a2;padding:0 12px;margin-bottom:8px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:9px;color:#aeb9ce;margin:3px 0;font-size:13px}
+.nav-item.active{background:#293653;color:#fff}.nav-icon{width:18px;text-align:center;font-size:16px}.sidebar-bottom{margin-top:auto;border-top:1px solid #2b3650;padding:18px 10px 0;color:#8795af;font-size:11px}
+.main{min-width:0;padding:28px 34px 44px;max-width:1600px;width:100%;margin:0 auto}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}.eyebrow{color:var(--blue);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+h1{font-size:27px;letter-spacing:-.7px;margin:5px 0 4px}.sub{color:var(--muted);font-size:13px}
+.user{display:flex;align-items:center;gap:10px}.avatar{width:36px;height:36px;border-radius:50%;background:#e8eaff;color:#4f60c9;display:grid;place-items:center;font-weight:700}.user span{display:block;font-size:12px;font-weight:650}.user small{color:var(--muted);font-size:11px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}.stat{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:17px 18px;box-shadow:var(--shadow)}
+.stat-top{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}.stat-icon{width:29px;height:29px;border-radius:9px;background:#f0f2ff;color:var(--blue);display:grid;place-items:center}
+.stat-value{font-size:25px;font-weight:750;letter-spacing:-.6px;margin:10px 0 2px}.stat-note{font-size:11px;color:var(--muted)}.stat-note b{color:var(--green)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+.panel-head{padding:20px 21px 16px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:1px solid var(--line)}
+.panel-head h2{font-size:16px;margin:0 0 4px}.panel-head p{font-size:12px;color:var(--muted);margin:0}
+.updated{font-size:11px;color:var(--muted);white-space:nowrap;padding-top:3px}
+.toolbar{padding:15px 20px;display:flex;gap:10px;align-items:center;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:220px;max-width:370px}.search-wrap span{position:absolute;left:12px;top:9px;color:#929bb0}.search{width:100%;border:1px solid var(--line);background:#fbfcfe;border-radius:8px;padding:9px 12px 9px 35px;outline:none;font-size:12px}.search:focus{border-color:#9ba7f4;box-shadow:0 0 0 3px #edf0ff}
+select{border:1px solid var(--line);background:#fff;color:#4c566b;border-radius:8px;padding:9px 30px 9px 11px;font-size:12px;outline:none}
+.result-count{margin-left:auto;color:var(--muted);font-size:11px}
+.legend{display:flex;gap:8px;align-items:center;padding:12px 20px;background:#fcfcfe;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.legend-label{font-size:11px;color:var(--muted);margin-right:4px}.legend-chip{font-size:10px;font-weight:650;border-radius:20px;padding:5px 9px;display:inline-flex;align-items:center;gap:6px}.dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.chip-high{background:var(--red-soft);color:var(--red)}.chip-mid{background:var(--amber-soft);color:var(--amber)}.chip-low{background:var(--green-soft);color:var(--green)}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:850px}thead th{text-align:left;font-size:10px;letter-spacing:.65px;text-transform:uppercase;color:#8992a5;font-weight:700;padding:12px 14px;background:#fbfcfe;border-bottom:1px solid var(--line);white-space:nowrap}tbody tr{border-bottom:1px solid #eef0f5;transition:background .15s;cursor:pointer}tbody tr:last-child{border-bottom:0}tbody tr:hover{background:#f8f9fd}td{padding:13px 14px;font-size:12px;vertical-align:middle;white-space:nowrap}
+tbody tr.high{box-shadow:inset 3px 0 0 var(--red)}tbody tr.medium{box-shadow:inset 3px 0 0 var(--amber)}tbody tr.low{box-shadow:inset 3px 0 0 var(--green)}
+.customer{display:flex;align-items:center;gap:9px}.initial{width:30px;height:30px;border-radius:9px;background:#eef0ff;color:#5868cf;display:grid;place-items:center;font-size:10px;font-weight:750}.customer-name{font-weight:700;font-size:12px}.customer-id{font-size:10px;color:#929bad;margin-top:2px}
+.score{font-weight:800;font-variant-numeric:tabular-nums}.score.high{color:var(--red)}.score.medium{color:var(--amber)}.score.low{color:var(--green)}
+.pill{display:inline-flex;padding:5px 8px;border-radius:20px;font-size:10px;font-weight:700}.pill.high{background:var(--red-soft);color:var(--red)}.pill.medium{background:var(--amber-soft);color:var(--amber)}.pill.low{background:var(--green-soft);color:var(--green)}
+.reason{max-width:240px;overflow:hidden;text-overflow:ellipsis;color:#596378}.action{color:#5666d8;font-weight:650;font-size:11px}
+.empty{padding:38px;text-align:center;color:var(--muted);font-size:13px}
+.footer-note{padding:13px 20px;border-top:1px solid var(--line);font-size:10px;color:#8992a5;background:#fcfcfe}
+.overlay{position:fixed;inset:0;background:rgba(17,25,43,.35);display:none;justify-content:flex-end;z-index:5}.overlay.open{display:flex}
+.drawer{width:min(440px,100%);height:100%;background:#fff;padding:25px;overflow:auto;box-shadow:-10px 0 35px rgba(20,30,55,.12);animation:slide .2s ease}
+@keyframes slide{from{transform:translateX(20px);opacity:.7}to{transform:translateX(0);opacity:1}}
+.drawer-head{display:flex;justify-content:space-between;align-items:center}.drawer-head h2{font-size:17px;margin:0}.close{border:0;background:#f1f3f8;width:31px;height:31px;border-radius:8px;cursor:pointer;font-size:18px;color:#667085}
+.profile{display:flex;align-items:center;gap:13px;margin:24px 0}.profile .initial{width:48px;height:48px;font-size:15px}.profile h3{margin:0 0 3px;font-size:16px}.profile p{margin:0;color:var(--muted);font-size:11px}
+.detail-score{background:#f8f9fd;border:1px solid var(--line);border-radius:12px;padding:15px;margin-bottom:20px}.detail-score-top{display:flex;justify-content:space-between;align-items:center}.detail-score strong{font-size:27px}.detail-score small{display:block;color:var(--muted);font-size:11px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 20px}.detail-box{background:#fafbfe;border:1px solid var(--line);border-radius:10px;padding:12px}.detail-box small{color:var(--muted);font-size:10px}.detail-box b{display:block;font-size:16px;margin-top:4px}
+.section-title{font-size:12px;font-weight:750;margin:19px 0 8px}.reason-card,.action-card{padding:12px;border-radius:10px;font-size:12px;line-height:1.55}.reason-card{background:#fff8ed;border:1px solid #f5e8d0;color:#76531d}.action-card{background:#f0f3ff;border:1px solid #e2e7ff;color:#3e4e9a}.action-card ul{padding-left:17px;margin:7px 0 0}.action-card li{margin:4px 0}
+@media(max-width:1000px){.app{grid-template-columns:70px 1fr}.sidebar{padding:22px 10px}.brand{padding:0;justify-content:center}.brand>div:last-child,.nav-label,.nav-item span:last-child,.sidebar-bottom{display:none}.nav-item{justify-content:center;padding:12px 5px}.main{padding:24px 20px}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.main{padding:20px 12px}.topbar{align-items:flex-start}.user>div:last-child{display:none}h1{font-size:22px}.stats{gap:8px}.stat{padding:13px}.stat-value{font-size:21px}.panel-head{padding:16px}.updated{display:none}.toolbar{padding:12px}.search-wrap{max-width:none;flex-basis:100%}.result-count{margin-left:0}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">G</div><div><strong>GymSyS</strong><small>INTELLIGENCE PLATFORM</small></div></div>
+    <div>
+      <div class="nav-label">WORKSPACE</div>
+      <div class="nav-item"><span class="nav-icon">▦</span><span>Tổng quan</span></div>
+      <div class="nav-item active"><span class="nav-icon">♙</span><span>Giữ chân khách hàng</span></div>
+      <div class="nav-item"><span class="nav-icon">◷</span><span>Phân tích hội viên</span></div>
+      <div class="nav-item"><span class="nav-icon">▤</span><span>Báo cáo tài chính</span></div>
+      <div class="nav-item"><span class="nav-icon">⚙</span><span>Vận hành</span></div>
+    </div>
+    <div class="sidebar-bottom">GYMSYS DEMO VERSION<br>Customer Intelligence · v0.1</div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div><div class="eyebrow">CUSTOMER INTELLIGENCE</div><h1>Ưu tiên giữ chân hội viên</h1><div class="sub">Theo dõi rủi ro rời bỏ và phân bổ nguồn lực chăm sóc khách hàng.</div></div>
+      <div class="user"><div class="avatar">AD</div><div><span>Gym Administrator</span><small>Quản trị viên</small></div></div>
+    </header>
+
+    <section class="stats">
+      <div class="stat"><div class="stat-top"><span>Tổng hội viên</span><span class="stat-icon">♙</span></div><div class="stat-value" id="totalCount">12</div><div class="stat-note">Đang có trong hệ thống demo</div></div>
+      <div class="stat"><div class="stat-top"><span>Cần ưu tiên cao</span><span class="stat-icon" style="background:#fff0f0;color:#d94d59">!</span></div><div class="stat-value" id="highCount">0</div><div class="stat-note">Cần can thiệp cá nhân hóa</div></div>
+      <div class="stat"><div class="stat-top"><span>Churn risk trung bình</span><span class="stat-icon">↗</span></div><div class="stat-value" id="avgChurn">0%</div><div class="stat-note">Xác suất không gia hạn trung bình</div></div>
+      <div class="stat"><div class="stat-top"><span>CLV ước tính</span><span class="stat-icon">◇</span></div><div class="stat-value" id="totalClv">0</div><div class="stat-note">Tổng giá trị vòng đời còn lại</div></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><div><h2>Danh sách hội viên cần giữ chân</h2><p>Sắp xếp theo điểm ưu tiên tổng hợp Cᵢ từ cao xuống thấp.</p></div><div class="updated">● Dữ liệu demo · Cập nhật vừa xong</div></div>
+      <div class="toolbar">
+        <div class="search-wrap"><span>⌕</span><input id="searchInput" class="search" placeholder="Tìm theo tên hoặc mã khách hàng..." autocomplete="off"></div>
+        <select id="levelFilter"><option value="all">Tất cả mức độ</option><option value="high">Ưu tiên cao</option><option value="medium">Ưu tiên trung bình</option><option value="low">Ưu tiên thấp</option></select>
+        <select id="sortSelect"><option value="desc">Điểm ưu tiên: cao → thấp</option><option value="asc">Điểm ưu tiên: thấp → cao</option><option value="churn">Churn risk: cao → thấp</option><option value="clv">CLV: cao → thấp</option></select>
+        <div class="result-count" id="resultCount">12 hội viên</div>
+      </div>
+      <div class="legend">
+        <span class="legend-label">PHÂN LOẠI:</span>
+        <span class="legend-chip chip-high"><i class="dot"></i> Cao · Can thiệp trực tiếp</span>
+        <span class="legend-chip chip-mid"><i class="dot"></i> Trung bình · Chăm sóc chủ động</span>
+        <span class="legend-chip chip-low"><i class="dot"></i> Thấp · Duy trì tự động</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Hội viên</th><th>Churn risk</th><th>CLV ước tính</th><th>Điểm Cᵢ</th><th>Mức ưu tiên</th><th>Nguyên nhân chính</th><th>Hành động</th></tr></thead>
+          <tbody id="customerRows"></tbody>
+        </table>
+        <div class="empty" id="emptyState" style="display:none">Không tìm thấy hội viên phù hợp.</div>
+      </div>
+      <div class="footer-note">* Điểm Cᵢ = w₁ × Churn risk + w₂ × CLV chuẩn hóa. Dữ liệu, xác suất và CLV trong phiên bản này được mô phỏng để minh họa giao diện.</div>
+    </section>
+  </main>
+</div>
+
+<div class="overlay" id="overlay">
+  <aside class="drawer">
+    <div class="drawer-head"><h2>Hồ sơ hội viên</h2><button class="close" id="closeDrawer" aria-label="Đóng">×</button></div>
+    <div id="drawerContent"></div>
+  </aside>
+</div>
+
+<script>
+const customers = [
+ {id:"GY001",name:"Nguyễn Minh Anh",churn:.91,clv:14800000,score:.88,level:"high",reason:"Tần suất check-in giảm mạnh; phàn nàn về tình trạng quá tải giờ cao điểm.",days:8,rating:2,drop:65,visits:1.2,complaint:"Quá tải lúc 18:00–20:00, thường phải chờ thiết bị.",action:["Quản lý hoặc nhân viên chăm sóc liên hệ trực tiếp trong 24 giờ.","Xin lỗi và xác minh trải nghiệm; đề xuất khung giờ ít đông hơn.","Cân nhắc ưu đãi gia hạn cá nhân hóa sau khi xử lý khiếu nại."]},
+ {id:"GY002",name:"Trần Quốc Bảo",churn:.84,clv:13200000,score:.82,level:"high",reason:"Sắp hết hạn gói, mức độ hài lòng thấp và có khiếu nại chưa xử lý.",days:5,rating:2,drop:48,visits:1.8,complaint:"Phản ánh chất lượng tư vấn và hỗ trợ tại quầy.",action:["Gọi điện chăm sóc cá nhân, ưu tiên giải quyết khiếu nại.","Đề xuất buổi tư vấn hoặc PT trải nghiệm miễn phí.","Chỉ đưa ra ưu đãi gia hạn sau khi xác định đúng nguyên nhân."]},
+ {id:"GY003",name:"Lê Hoàng Phúc",churn:.76,clv:15800000,score:.79,level:"high",reason:"Giảm check-in liên tục trong tháng gần nhất; giá trị hội viên cao.",days:19,rating:3,drop:52,visits:2.1,complaint:"Chưa ghi nhận khiếu nại cụ thể.",action:["Nhân viên phụ trách chủ động liên hệ hỏi thăm mục tiêu tập luyện.","Đề xuất lịch tập hoặc chương trình phù hợp để tái tạo động lực.","Theo dõi tần suất check-in trong 7 ngày tiếp theo."]},
+ {id:"GY004",name:"Phạm Khánh Linh",churn:.72,clv:9100000,score:.73,level:"medium",reason:"Tần suất tập giảm và đánh giá trải nghiệm ở mức trung bình.",days:14,rating:3,drop:35,visits:2.5,complaint:"Thiết bị thường phải chờ vào buổi tối.",action:["Gửi tin nhắn hỏi thăm và ghi nhận bất tiện.","Gợi ý khung giờ tập ít đông hoặc lớp tập phù hợp.","Theo dõi phản hồi trước khi áp dụng ưu đãi."]},
+ {id:"GY005",name:"Võ Gia Hân",churn:.68,clv:11000000,score:.71,level:"medium",reason:"Gói tập sắp hết hạn; hoạt động có dấu hiệu suy giảm.",days:12,rating:4,drop:28,visits:3.0,complaint:"Không có khiếu nại nghiêm trọng.",action:["Gửi thông báo nhắc gia hạn kèm quyền lợi hội viên.","Nhân viên gửi lời mời trao đổi nếu khách cần tư vấn gói mới.","Theo dõi việc gia hạn trong 5–7 ngày."]},
+ {id:"GY006",name:"Đặng Nhật Nam",churn:.61,clv:7600000,score:.62,level:"medium",reason:"Mức độ tương tác giảm; chưa phát sinh khiếu nại.",days:27,rating:3,drop:31,visits:2.7,complaint:"Chưa ghi nhận.",action:["Gửi tin nhắn tự động hỏi thăm tình hình tập luyện.","Gợi ý thử một lớp học hoặc lịch tập mới.","Đánh giá lại sau 1 tuần."]},
+ {id:"GY007",name:"Bùi Ngọc Mai",churn:.54,clv:12400000,score:.61,level:"medium",reason:"CLV tương đối cao nhưng có dấu hiệu giảm tần suất tập.",days:34,rating:4,drop:22,visits:3.4,complaint:"Từng góp ý về thời gian lớp học.",action:["Gửi lời mời tham gia lớp học phù hợp lịch cá nhân.","Nhắc quyền lợi hội viên và hỏi thăm trải nghiệm.","Theo dõi mức độ tương tác trong kỳ tiếp theo."]},
+ {id:"GY008",name:"Đỗ Tuấn Kiệt",churn:.48,clv:6900000,score:.49,level:"medium",reason:"Tần suất check-in thấp hơn mức trung bình của nhóm.",days:42,rating:3,drop:18,visits:2.2,complaint:"Không có khiếu nại nổi bật.",action:["Gửi thông báo nhắc lịch tập nhẹ nhàng.","Đề xuất mục tiêu tập luyện ngắn hạn.","Chưa cần áp dụng ưu đãi tốn chi phí."]},
+ {id:"GY009",name:"Huỳnh Thảo Vy",churn:.39,clv:14300000,score:.58,level:"medium",reason:"Rủi ro churn vừa phải nhưng CLV cao.",days:51,rating:4,drop:12,visits:3.8,complaint:"Chưa ghi nhận khiếu nại.",action:["Duy trì chăm sóc cá nhân hóa ở mức nhẹ.","Gửi thông tin về quyền lợi và chương trình dành cho hội viên thân thiết.","Theo dõi xu hướng sử dụng dịch vụ."]},
+ {id:"GY010",name:"Ngô Đức Minh",churn:.29,clv:5200000,score:.32,level:"low",reason:"Hoạt động và mức độ hài lòng tương đối ổn định.",days:63,rating:4,drop:5,visits:4.2,complaint:"Không có khiếu nại.",action:["Duy trì email hoặc thông báo tự động định kỳ.","Gửi lời nhắc gia hạn đúng thời điểm.","Không cần can thiệp cá nhân tốn nguồn lực."]},
+ {id:"GY011",name:"Phan Yến Nhi",churn:.21,clv:8400000,score:.35,level:"low",reason:"Tần suất tập ổn định, chưa có tín hiệu rời bỏ đáng kể.",days:72,rating:5,drop:0,visits:5.1,complaint:"Không có khiếu nại.",action:["Duy trì trải nghiệm dịch vụ hiện tại.","Gửi nội dung cộng đồng hoặc chương trình hội viên.","Tiếp tục theo dõi định kỳ."]},
+ {id:"GY012",name:"Mai Thành Đạt",churn:.13,clv:6100000,score:.22,level:"low",reason:"Tương tác tốt và đánh giá tích cực.",days:80,rating:5,drop:0,visits:5.6,complaint:"Không có khiếu nại.",action:["Duy trì chăm sóc tự động.","Gửi lời cảm ơn và cập nhật quyền lợi hội viên.","Không cần ưu đãi giữ chân riêng ở thời điểm hiện tại."]}
+];
+const levelNames={high:"Ưu tiên cao",medium:"Ưu tiên trung bình",low:"Ưu tiên thấp"};
+const money=n=>new Intl.NumberFormat("vi-VN",{style:"currency",currency:"VND",maximumFractionDigits:0}).format(n);
+const pct=n=>(n*100).toFixed(1)+"%";
+const initials=name=>name.split(" ").slice(-2).map(s=>s[0]).join("").toUpperCase();
+
+function render(){
+ const q=document.getElementById("searchInput").value.trim().toLocaleLowerCase("vi");
+ const level=document.getElementById("levelFilter").value;
+ const sort=document.getElementById("sortSelect").value;
+ let list=customers.filter(c=>(c.name.toLocaleLowerCase("vi").includes(q)||c.id.toLowerCase().includes(q))&&(level==="all"||c.level===level));
+ list.sort((a,b)=>sort==="asc"?a.score-b.score:sort==="churn"?b.churn-a.churn:sort==="clv"?b.clv-a.clv:b.score-a.score);
+ document.getElementById("customerRows").innerHTML=list.map(c=>`
+ <tr class="${c.level}" data-id="${c.id}">
+  <td><div class="customer"><div class="initial">${initials(c.name)}</div><div><div class="customer-name">${c.name}</div><div class="customer-id">${c.id}</div></div></div></td>
+  <td>${pct(c.churn)}</td><td>${money(c.clv)}</td>
+  <td><span class="score ${c.level}">${c.score.toFixed(2)}</span></td>
+  <td><span class="pill ${c.level}">${levelNames[c.level]}</span></td>
+  <td><div class="reason" title="${c.reason}">${c.reason}</div></td>
+  <td><span class="action">Xem chi tiết →</span></td>
+ </tr>`).join("");
+ document.getElementById("emptyState").style.display=list.length?"none":"block";
+ document.getElementById("resultCount").textContent=`${list.length} hội viên`;
+ document.getElementById("customerRows").querySelectorAll("tr").forEach(row=>row.addEventListener("click",()=>openCustomer(row.dataset.id)));
+}
+function openCustomer(id){
+ const c=customers.find(x=>x.id===id);if(!c)return;
+ document.getElementById("drawerContent").innerHTML=`
+  <div class="profile"><div class="initial">${initials(c.name)}</div><div><h3>${c.name}</h3><p>${c.id} · Hội viên GymSyS</p></div></div>
+  <div class="detail-score"><div class="detail-score-top"><div><small>Điểm ưu tiên giữ chân Cᵢ</small><strong class="score ${c.level}">${c.score.toFixed(2)}</strong></div><span class="pill ${c.level}">${levelNames[c.level]}</span></div><small>Thứ tự ưu tiên được xác định từ churn risk và CLV chuẩn hóa.</small></div>
+  <div class="detail-grid">
+   <div class="detail-box"><small>Xác suất churn</small><b>${pct(c.churn)}</b></div>
+   <div class="detail-box"><small>CLV ước tính</small><b>${money(c.clv)}</b></div>
+   <div class="detail-box"><small>Ngày còn lại</small><b>${c.days} ngày</b></div>
+   <div class="detail-box"><small>Đánh giá gần nhất</small><b>${c.rating}/5 sao</b></div>
+   <div class="detail-box"><small>Check-in trung bình</small><b>${c.visits} lần/tuần</b></div>
+   <div class="detail-box"><small>Mức giảm check-in</small><b>${c.drop}%</b></div>
+  </div>
+  <div class="section-title">Nguyên nhân / tín hiệu chính</div><div class="reason-card">${c.reason}<br><br><b>Ghi nhận khiếu nại:</b> ${c.complaint}</div>
+  <div class="section-title">Chiến lược giữ chân đề xuất</div><div class="action-card"><b>${levelNames[c.level]}</b><ul>${c.action.map(a=>`<li>${a}</li>`).join("")}</ul></div>
+ `;
+ document.getElementById("overlay").classList.add("open");
+}
+document.getElementById("searchInput").addEventListener("input",render);
+document.getElementById("levelFilter").addEventListener("change",render);
+document.getElementById("sortSelect").addEventListener("change",render);
+document.getElementById("closeDrawer").addEventListener("click",()=>document.getElementById("overlay").classList.remove("open"));
+document.getElementById("overlay").addEventListener("click",e=>{if(e.target.id==="overlay")e.currentTarget.classList.remove("open")});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.getElementById("overlay").classList.remove("open")});
+document.getElementById("totalCount").textContent=customers.length;
+document.getElementById("highCount").textContent=customers.filter(c=>c.level==="high").length;
+document.getElementById("avgChurn").textContent=pct(customers.reduce((s,c)=>s+c.churn,0)/customers.length);
+document.getElementById("totalClv").textContent=(customers.reduce((s,c)=>s+c.clv,0)/1e6).toFixed(1)+" tr";
+render();
+</script>
+</body>
+</html>
